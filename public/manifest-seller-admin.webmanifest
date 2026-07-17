@@ -1,0 +1,17 @@
+{
+  "name": "Bitez Admin",
+  "short_name": "Bitez Admin",
+  "description": "Bitez canteen admin dashboard.",
+  "id": "/seller/",
+  "theme_color": "#050505",
+  "background_color": "#050505",
+  "display": "standalone",
+  "orientation": "any",
+  "start_url": "/seller/dashboard",
+  "scope": "/seller/",
+  "icons": [
+    { "src": "/icon-192.png?v=3", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png?v=3", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512-maskable.png?v=3", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

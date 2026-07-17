@@ -1,0 +1,704 @@
+html {
+  touch-action: manipulation;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-touch-callout: none;
+}
+
+/* Keep taps fast without blocking Safari's native scroll pipeline. */
+html, body {
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+}
+
+/* Perf: kill iOS 300ms tap delay on interactive elements globally. */
+button, a, [role="button"], [role="link"], [data-tappable="true"] {
+  touch-action: manipulation;
+}
+
+/* Optional keep-alive tab containers (CSS visibility toggle). */
+.tab-content {
+  transition: opacity 160ms ease;
+}
+.tab-content[data-active="false"] {
+  opacity: 0;
+  pointer-events: none;
+  /* Keep mounted but visually hidden + non-interactive. */
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+.tab-content[data-active="true"] {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* Reduce scroll jank during tab transitions. */
+.tab-scroll-container {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+html, body, #root {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+/* iOS PWA safe-area helpers */
+:root {
+  --ios-pwa-safe-top: 0px;
+  --ios-pwa-safe-bottom: 0px;
+  --ios-pwa-top-breathing: 0px;
+  --ios-content-top: 0px;
+  --ios-page-gap: 24px;
+  --user-bottom-nav-height: 70px;
+    --user-bottom-nav-safe: 0px;
+    --user-app-bg: 214 32% 94%;
+    --user-app-bg-soft: 213 38% 97%;
+    --user-surface: 214 35% 98%;
+    --user-surface-raised: 212 42% 96%;
+    --user-border: 216 24% 86%;
+    --user-text: 220 24% 12%;
+    --user-muted: 218 11% 49%;
+}
+
+@supports (-webkit-touch-callout: none) {
+  @media (display-mode: standalone) {
+    :root {
+      --ios-pwa-safe-top: env(safe-area-inset-top, 0px);
+      --ios-pwa-safe-bottom: env(safe-area-inset-bottom, 0px);
+      --ios-pwa-top-breathing: 4px;
+    }
+  }
+
+  html.ios-pwa {
+    --ios-pwa-safe-top: env(safe-area-inset-top, 0px);
+    --ios-pwa-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --ios-pwa-top-breathing: 6px;
+    --ios-content-top: 12px;
+    --ios-page-gap: 24px;
+  --user-bottom-nav-safe: min(env(safe-area-inset-bottom, 0px), 16px);
+  }
+}
+
+html.ios-device:not(.ios-pwa) {
+  --ios-pwa-safe-top: env(safe-area-inset-top, 0px);
+  --ios-pwa-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ios-pwa-top-breathing: 6px;
+  --ios-content-top: 12px;
+  --ios-page-gap: 24px;
+  --user-bottom-nav-safe: min(env(safe-area-inset-bottom, 0px), 16px);
+}
+
+/* Android (and other non-iOS) PWA standalone — give the home screen
+   the same generous breathing room so it feels like a native app and
+   uses the full screen instead of hugging the status bar. */
+html.pwa-standalone:not(.ios-pwa) {
+  --ios-pwa-safe-top: env(safe-area-inset-top, 0px);
+  --ios-pwa-safe-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+  --ios-pwa-top-breathing: 6px;
+  --ios-content-top: 14px;
+  --ios-page-gap: 26px;
+  --user-bottom-nav-safe: min(env(safe-area-inset-bottom, 0px), 10px);
+}
+
+html.android-pwa {
+  --ios-pwa-safe-top: env(safe-area-inset-top, 0px);
+  --ios-pwa-top-breathing: 8px;
+  --ios-content-top: 16px;
+  --ios-page-gap: 28px;
+  --user-bottom-nav-safe: min(env(safe-area-inset-bottom, 0px), 10px);
+}
+
+.safe-area-top { padding-top: env(safe-area-inset-top, 0px); }
+.safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.safe-area-left { padding-left: env(safe-area-inset-left, 0px); }
+.safe-area-right { padding-right: env(safe-area-inset-right, 0px); }
+#root {
+  min-height: var(--app-vh, 100dvh);
+  isolation: isolate;
+  background: hsl(var(--background));
+}
+/* Native-feel momentum scroll on every scrollable region. */
+[data-scroll="true"],
+.tab-scroll-container,
+.scrollable {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+/* Body is the primary scroll surface for user pages — give it momentum too. */
+body {
+  -webkit-overflow-scrolling: touch;
+}
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+img, svg, a {
+  -webkit-user-drag: none;
+}
+input, textarea {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+body {
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* Subtle native-app cross-fade between routes. Pure opacity — no layout
+   shift, no transform that would affect fixed children (bottom nav). */
+@keyframes bitez-route-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+main {
+  animation: bitez-route-fade 180ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+@media (prefers-reduced-motion: reduce) {
+  main { animation: none; }
+}
+html, body {
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
+}
+
+@keyframes bitez-pulse {
+  0%   { transform: scale(0.95); opacity: 0.6; }
+  70%  { transform: scale(1.10); opacity: 0.1; }
+  100% { transform: scale(0.95); opacity: 0.6; }
+}
+.bitez-glow {
+  text-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+@keyframes bitez-shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* Native-app-feel tap micro-interaction.
+   Apply globally to interactive elements + any element with data-tappable.
+   Honors prefers-reduced-motion. */
+button, a, [role="button"], [role="link"], [data-tappable="true"] {
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: center;
+}
+button:active, a:active, [role="button"]:active, [role="link"]:active,
+[data-tappable="true"]:active {
+  transform: scale(0.97);
+}
+button:disabled, a[aria-disabled="true"], [role="button"][aria-disabled="true"] {
+  transform: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  button, a, [role="button"], [role="link"], [data-tappable="true"] {
+    transition: none;
+  }
+  button:active, a:active, [role="button"]:active, [role="link"]:active,
+  [data-tappable="true"]:active {
+    transform: none;
+  }
+}
+
+/* Skeleton shimmer used by loading placeholders. */
+@keyframes bitez-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slideDownBars {
+  from { transform: translateY(-120%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.bitez-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(0,0,0,0.06) 0%,
+    rgba(0,0,0,0.12) 50%,
+    rgba(0,0,0,0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: bitez-shimmer 1.4s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Bitez dark theme — mobile-first PWA */
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 40% 9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 40% 9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 6%;
+    --primary-glow: 224 90% 70%;
+
+    --secondary: 222 32% 14%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 222 32% 14%;
+    --muted-foreground: 215 16% 65%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 32% 16%;
+    --input: 222 32% 16%;
+    --ring: 217 91% 60%;
+
+    --radius: 1rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(224 90% 70%));
+    --gradient-card: linear-gradient(160deg, hsl(222 40% 11%), hsl(222 45% 8%));
+    --shadow-card: 0 8px 24px -12px hsl(222 80% 2% / 0.6);
+    --shadow-glow: 0 0 32px -8px hsl(217 91% 60% / 0.45);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+    --card: 222 40% 9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 40% 9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 6%;
+    --secondary: 222 32% 14%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 222 32% 14%;
+    --muted-foreground: 215 16% 65%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 222 32% 16%;
+    --input: 222 32% 16%;
+    --ring: 217 91% 60%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply text-foreground;
+    background: hsl(var(--background));
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    min-height: var(--app-vh, 100dvh);
+  }
+
+  html {
+    background: hsl(var(--background));
+    min-height: 100%;
+  }
+
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    font-feature-settings: 'liga';
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
+/* ---------- User App: Liquid Glass (light) utilities ---------- */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .app-route-loader {
+    min-height: var(--app-vh, 100dvh);
+    background: hsl(var(--background));
+  }
+
+  html.user-app-route .app-route-loader,
+  body.user-app-route .app-route-loader {
+    background: hsl(var(--user-app-bg));
+  }
+
+  /* User app: light background everywhere, responsive content width.
+     The user app pages are designed as a mobile-first column. On wider
+     screens we keep the column centered but paint the surrounding area
+     with the same light surface so there are no black/white gaps. */
+  html.user-app-route,
+  html.user-app-route body,
+  body.user-app-route {
+    background: hsl(var(--user-app-bg)) !important;
+    color: hsl(var(--user-text));
+  }
+  html.user-app-route #root,
+  body.user-app-route #root {
+    background: hsl(var(--user-app-bg));
+  }
+
+  .user-shell {
+    position: relative;
+    min-height: var(--app-vh, 100dvh);
+    background: hsl(var(--user-app-bg));
+    isolation: isolate;
+  }
+
+  .user-route-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    min-height: var(--app-vh, 100dvh);
+    background: hsl(var(--user-app-bg));
+    pointer-events: none;
+  }
+
+  .user-route-content {
+    position: relative;
+    z-index: 0;
+    min-height: var(--app-vh, 100dvh);
+    background: hsl(var(--user-app-bg));
+  }
+
+  /* When the bottom nav is visible, reserve space below content so the
+     last items aren't hidden behind it, and prevent rubber-band overscroll
+     that would let the page scroll past the nav. */
+  .user-shell-with-nav .user-route-content {
+    padding-bottom: calc(var(--user-bottom-nav-height) + var(--user-bottom-nav-safe, 0px));
+  }
+
+  html.user-app-route,
+  body.user-app-route {
+    overscroll-behavior-y: auto !important;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html.user-app-route {
+    scroll-behavior: smooth;
+  }
+
+  .user-route-content {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .user-shell-menu-plain {
+    background: hsl(var(--user-app-bg)) !important;
+  }
+
+  .user-shell-menu-plain .user-topbar {
+    background: hsl(var(--user-app-bg)) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: 0 !important;
+  }
+
+  .user-page {
+    width: 100%;
+    min-height: var(--app-vh, 100dvh);
+    background: transparent !important;
+    color: hsl(var(--user-text));
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --user-page-max: 72rem;
+    --user-page-pad: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-left, 0px));
+  }
+
+  .user-content {
+    width: min(100%, 68rem);
+    margin-inline: auto;
+    background: transparent !important;
+    padding-left: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-left, 0px));
+    padding-right: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-right, 0px));
+  }
+
+  .user-content-readable {
+    width: min(100%, 52rem);
+  }
+
+  .user-topbar {
+    background: hsl(var(--user-app-bg) / 0.86) !important;
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    border-bottom: 1px solid hsl(var(--user-border) / 0.72);
+  }
+
+  .user-card {
+    background: hsl(var(--user-surface) / 0.72) !important;
+    border: 1px solid hsl(var(--user-border) / 0.82) !important;
+    box-shadow: 0 10px 28px hsl(220 25% 40% / 0.09);
+  }
+
+  .user-card-muted {
+    background: hsl(var(--user-surface-raised) / 0.72) !important;
+    border: 1px solid hsl(var(--user-border) / 0.78) !important;
+  }
+
+  .user-floating-action {
+    position: fixed;
+    z-index: 30;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(100%, 52rem);
+    padding-left: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-left, 0px));
+    padding-right: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-right, 0px));
+  }
+
+  /* Startup-level guard for the legacy user screens: many pages still carry
+     inline iOS-style white/gray backgrounds. Route-scoped important rules beat
+     those inline values so no user page can reintroduce white blocks or black
+     side gutters while the app grows responsively. */
+  body.user-app-route main[style*="#F5F5F7"],
+  body.user-app-route main[style*="#F8FAFC"],
+  body.user-app-route div[style*="min-height"][style*="#F5F5F7"],
+  body.user-app-route div[style*="min-height"][style*="#F8FAFC"] {
+    background: transparent !important;
+  }
+
+  body.user-app-route [style*="max-width: 390px"],
+  body.user-app-route [style*="max-width:390px"],
+  body.user-app-route [style*="max-width: 448px"],
+  body.user-app-route [style*="max-width:448px"] {
+    max-width: min(100%, 52rem) !important;
+  }
+
+  /* Make the legacy mobile-width wrappers inside user pages expand on
+     larger screens so the app uses the available space responsively
+     instead of staying pinned to a fixed phone width. */
+  body.user-app-route .max-w-md {
+    max-width: min(100%, 28rem);
+  }
+  @media (min-width: 640px) {
+    body.user-app-route .max-w-md { max-width: min(100%, 34rem); }
+  }
+  @media (min-width: 1024px) {
+    body.user-app-route .max-w-md { max-width: min(100%, 42rem); }
+  }
+
+  .seller-admin-shell {
+    min-height: var(--app-vh, 100dvh);
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    overflow-x: hidden;
+  }
+
+  .seller-admin-content {
+    width: min(100%, 1180px);
+    margin-inline: auto;
+    padding-left: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-left, 0px));
+    padding-right: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-right, 0px));
+    padding-top: calc(env(safe-area-inset-top, 0px) + clamp(1rem, 3vw, 1.75rem));
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(2rem, 5vw, 3.5rem));
+  }
+
+  .seller-admin-narrow {
+    width: min(100%, 560px);
+  }
+
+  @media (min-width: 768px) {
+    .seller-admin-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      align-items: stretch;
+    }
+  }
+
+  .user-home-screen {
+    min-height: var(--app-vh, 100dvh);
+    width: min(100%, var(--user-page-max));
+    margin-inline: auto;
+    --home-greeting-top: calc(env(safe-area-inset-top, 0px) + clamp(10px, 2svh, 20px));
+    --home-greeting-gap: clamp(16px, 3svh, 28px);
+    --home-section-gap: clamp(20px, 4svh, 36px);
+  }
+
+  html.pwa-standalone .user-home-screen,
+  html.android-pwa .user-home-screen,
+  html.ios-pwa .user-home-screen {
+    --home-greeting-top: calc(env(safe-area-inset-top, 0px) + clamp(8px, 1.6svh, 16px));
+    --home-greeting-gap: clamp(14px, 2.6svh, 24px);
+    --home-section-gap: clamp(18px, 3.6svh, 32px);
+  }
+
+  html.pwa-standalone .user-home-greeting,
+  html.android-pwa .user-home-greeting,
+  html.ios-pwa .user-home-greeting {
+    padding-top: var(--home-greeting-top) !important;
+    margin-bottom: var(--home-greeting-gap) !important;
+  }
+
+  .lg-card {
+    border-radius: 22px;
+    background: hsl(var(--user-surface) / 0.72);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid hsl(var(--user-border) / 0.82);
+    box-shadow: 0 10px 28px hsl(220 25% 40% / 0.09);
+    position: relative;
+    overflow: hidden;
+    transition: all 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .lg-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    padding: 1px;
+    background: linear-gradient(180deg, hsl(var(--user-app-bg-soft) / 0.55) 0%, hsl(var(--user-border) / 0.24) 100%);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .lg-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 38%;
+    background: linear-gradient(180deg, hsl(var(--user-app-bg-soft) / 0.45) 0%, hsl(var(--user-app-bg-soft) / 0.1) 70%, transparent 100%);
+    border-radius: 22px 22px 50% 50% / 22px 22px 40px 40px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .lg-card:active { transform: scale(0.975); }
+
+  .lg-canteen {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 3rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.8);
+    transition: transform 0.2s ease;
+  }
+  .lg-canteen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    z-index: 10;
+  }
+  .lg-canteen:active { transform: scale(0.98); }
+
+  .active-pill {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+
+  .glass-text { text-shadow: 0 1px 2px rgba(255,255,255,1); position: relative; z-index: 3; }
+
+  /* Campus Bites glass card (offers + repeat) */
+  .cb-glass {
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    box-shadow:
+      inset 0 2px 0 rgba(255, 255, 255, 0.9),
+      0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 400ms ease;
+  }
+  .cb-glass::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.05) 100%);
+    border-radius: 22px 22px 50% 50% / 22px 22px 40px 40px;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .cb-glass::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    padding: 1px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.2) 100%);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .cb-glass:active { transform: scale(0.975); }
+  .cb-pill { transition: transform 400ms ease; }
+  .cb-pill:active { transform: scale(0.975); }
+}
+
+/* Hide Suspense fallback spinner while the launch loader is visible to prevent duplicate spinners */
+body.app-launching .suspense-loader { display: none !important; }
