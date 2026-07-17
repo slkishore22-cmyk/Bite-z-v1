@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Bitez Admin Panel — Dashboard</title>
+    <meta name="description" content="Bitez seller dashboard — manage your canteen, menu, inventory and orders.">
+    <meta name="author" content="Bitez" />
+
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=6" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png?v=6" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180x180.png?v=6" />
+    <link rel="apple-touch-icon-precomposed" href="/icons/apple-touch-icon.png?v=6" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png?v=6" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-96x96.png?v=6" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png?v=6" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png?v=6" />
+    <link rel="shortcut icon" href="/icons/icon-192x192.png?v=6" />
+    <meta name="application-name" content="Bitez" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png?v=6" />
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="/icons/splash-1290x2796.png?v=6" />
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="/icons/splash-1170x2532.png?v=6" />
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/icons/splash-750x1334.png?v=6" />
+    <script>
+      (function () {
+        var path = window.location.pathname;
+        var isMasterAdmin = path.indexOf('/master-admin') === 0;
+        var isSellerAdmin = path.indexOf('/seller') === 0;
+        var manifest = isMasterAdmin ? '/manifest-admin.webmanifest' : (isSellerAdmin ? '/manifest-seller-admin.webmanifest' : '/manifest.webmanifest');
+        var title = isMasterAdmin ? 'Bitez Master Admin' : (isSellerAdmin ? 'Bitez Admin' : 'Bitez');
+        var theme = isMasterAdmin ? '#0A0A0F' : (isSellerAdmin ? '#050505' : '#E9EEF5');
+        var standalone = isMasterAdmin || isSellerAdmin;
+        document.write('<link rel="manifest" href="' + manifest + '">');
+        document.write('<meta name="apple-mobile-web-app-title" content="' + title + '">');
+        document.write('<meta name="theme-color" content="' + theme + '">');
+        document.write('<meta name="apple-mobile-web-app-capable" content="' + (standalone ? 'yes' : 'no') + '">');
+        document.write('<meta name="mobile-web-app-capable" content="' + (standalone ? 'yes' : 'no') + '">');
+        document.documentElement.className += (isSellerAdmin ? ' seller-admin-route admin-app-route' : '') + (isMasterAdmin ? ' master-admin-route admin-app-route' : '');
+        if (!isSellerAdmin && !isMasterAdmin) {
+          document.documentElement.className += ' user-app-route';
+        }
+      })();
+    </script>
+    <style>
+      html, body, #root { margin: 0; min-height: 100%; background: hsl(222 47% 6%); }
+      body { background: #05070D; }
+      #root:empty { min-height: 100vh; min-height: 100dvh; background: #05070D; }
+      /* User app surfaces — keep light from the very first paint so the dark
+         admin body background never bleeds through behind translucent cards
+         (e.g. the Cart page liquid-glass sections). */
+      html.user-app-route,
+      html.user-app-route body,
+      html.user-app-route #root,
+      html.user-app-route #root:empty { background: hsl(214 32% 94%); }
+    </style>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" />
+    
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e3f1d9bd-5cf0-4b6e-b21f-083be7c73998/id-preview-0b91e95a--0115a17b-27e4-4d54-a8a0-69de6a082c2a.lovable.app-1776834865222.png">
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@Lovable" />
+    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e3f1d9bd-5cf0-4b6e-b21f-083be7c73998/id-preview-0b91e95a--0115a17b-27e4-4d54-a8a0-69de6a082c2a.lovable.app-1776834865222.png">
+    <meta property="og:title" content="Bitez Admin Panel — Dashboard">
+  <meta name="twitter:title" content="Bitez Admin Panel — Dashboard">
+    <meta property="og:description" content="Bitez seller dashboard — manage your canteen, menu, inventory and orders.">
+    <meta name="twitter:description" content="Bitez seller dashboard — manage your canteen, menu, inventory and orders.">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
