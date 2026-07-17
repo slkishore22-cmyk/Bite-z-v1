@@ -9,12 +9,14 @@ export default function RootRedirect() {
   const [path, setPath] = useState(() => window.location.pathname);
   const [authReady, setAuthReady] = useState(false);
 
-  useEffect(() => {
-    const unsub = auth.onAuthStateChanged(() => {
+useEffect(() => {
+    const unsub = auth.onAuthStateChanged((user) => {
+      // Firebase has determined auth state. It could be null.
+      // We are now "ready" to make a routing decision.
       if (!authReady) setAuthReady(true);
     });
-    return unsub;
-  }, [authReady]);
+    return () => unsub();
+  }, []);
   useEffect(() => {
     const sync = () => setPath(window.location.pathname);
     window.addEventListener('popstate', sync);
