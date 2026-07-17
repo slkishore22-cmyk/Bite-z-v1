@@ -34,7 +34,7 @@ export default function RootRedirect() {
   if (path.startsWith('/app')) {
     return <Navigate to={isAuthenticated && s?.role === 'user' ? '/app/home' : '/app/login'} replace />;
   }
-  if (!isAuthenticated) return <Navigate to="/seller/login" replace />;
+  if (!isAuthenticated) return <Navigate to="/app/login" replace />;
   if (s.role === 'master_admin') return <Navigate to="/master-admin/overview" replace />;
   if (s.role === 'seller') return <Navigate to="/seller/dashboard" replace />;
   return <Navigate to="/app/home" replace />;
