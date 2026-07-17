@@ -3,19 +3,9 @@ import { useEffect, useState } from 'react';
 import { getActiveSession } from '../utils/sessionManager';
 import { getAdminStandaloneRedirect } from '../lib/pwaLaunch';
 import { auth } from '../integrations/firebase/client';
-import OrbitLoader from './OrbitLoader';
 
 export default function RootRedirect() {
   const [path, setPath] = useState(() => window.location.pathname);
-  const [authReady, setAuthReady] = useState(false);
-
-  useEffect(() => {
-    const unsub = auth.onAuthStateChanged(() => {
-      if (!authReady) setAuthReady(true);
-    });
-    return unsub;
-  }, [authReady]);
-
   useEffect(() => {
     const sync = () => setPath(window.location.pathname);
     window.addEventListener('popstate', sync);
@@ -27,23 +17,6 @@ export default function RootRedirect() {
       window.removeEventListener('replacestate', sync);
     };
   }, []);
-
-  if (!authReady) {
-    return (
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'hsl(var(--background))',
-        }}
-      >
-        <OrbitLoader size={60} />
-      </div>
-    );
-  }
 
   const s = getActiveSession();
   const currentUser = auth.currentUser;
