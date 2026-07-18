@@ -236,10 +236,10 @@ const OrderStatus = () => {
             </span>
           </div>
           <h2 style={{ fontSize: "24px", fontWeight: "800", color: "#0F172A", margin: 0, letterSpacing: "-0.5px" }}>
-            Order Placed
+            {isCompleted ? "Order Collected" : "Order Placed"}
           </h2>
           <p style={{ fontSize: "14px", color: "#64748B", marginTop: 4, fontWeight: "500" }}>
-            Show this bill to the canteen staff to receive your order.
+            {isCompleted ? "This order has been successfully handed over." : "Show this bill to the canteen staff to receive your order."}
           </p>
         </div>
 
@@ -271,161 +271,230 @@ const OrderStatus = () => {
             }}
           />
 
-          {/* Card Header */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {/* Leaf Icon SVG */}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B82F6">
-                <path d="M2,21 C2,21 5,14 12,14 C12,14 17,9 18,6 C19,3 15,2 12,5 C9,8 9,12 9,12 C9,12 4,12 2,21 Z" />
-                <path d="M12,21 C12,21 14,16 19,16 C19,16 22,12 23,10 C24,8 21,7 19,9 C17,11 17,14 17,14 C17,14 13,14 12,21 Z" opacity="0.7" />
-              </svg>
-              <span style={{ fontSize: "14px", fontWeight: "700", color: "#0F172A", letterSpacing: "-0.2px" }}>
-                Campus Bites
-              </span>
-            </div>
-            <span
-              style={{
-                background: "#DCFCE7",
-                color: "#15803D",
-                padding: "4px 10px",
-                borderRadius: "12px",
-                fontSize: "11px",
-                fontWeight: "800",
-                letterSpacing: "0.5px",
-              }}
-            >
-              PAID
-            </span>
-          </div>
-
-          <div style={{ marginBottom: 16 }}>
-            <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#0F172A", margin: 0 }}>
-              {sellerName}
-            </h3>
-            <p style={{ fontSize: "13px", color: "#64748B", margin: "2px 0 0 0", fontWeight: "500" }}>
-              Digital Bill
-            </p>
-          </div>
-
-          {/* Dashed Separator with Order Number Pill */}
-          <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", margin: "24px 0" }}>
-            <div style={{ position: "absolute", left: 0, right: 0, borderBottom: "1px dashed #E2E8F0" }} />
-            <span
-              style={{
-                position: "relative",
-                background: "#ffffff",
-                color: "#0F172A",
-                padding: "4px 12px",
-                borderRadius: "12px",
-                fontSize: "12px",
-                fontWeight: "700",
-                border: "1px dashed #CBD5E1",
-              }}
-            >
-              Order #{format4DigitId(orderId)}
-            </span>
-          </div>
-
-          {/* Ordered items */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {items.map((item: any, idx: number) => (
-              <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div>
-                  <span style={{ fontSize: "15px", fontWeight: "600", color: "#0F172A" }}>
-                    {item.name}
-                  </span>
-                  <span style={{ display: "block", fontSize: "12px", color: "#64748B", marginTop: 2, fontWeight: "500" }}>
-                    ×{item.qty}
-                  </span>
-                </div>
-                <span style={{ fontSize: "15px", fontWeight: "700", color: "#0F172A" }}>
-                  ₹{item.price * item.qty}
+          <div>
+            {/* Card Header */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {/* Leaf Icon SVG */}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B82F6">
+                  <path d="M2,21 C2,21 5,14 12,14 C12,14 17,9 18,6 C19,3 15,2 12,5 C9,8 9,12 9,12 C9,12 4,12 2,21 Z" />
+                  <path d="M12,21 C12,21 14,16 19,16 C19,16 22,12 23,10 C24,8 21,7 19,9 C17,11 17,14 17,14 C17,14 13,14 12,21 Z" opacity="0.7" />
+                </svg>
+                <span style={{ fontSize: "14px", fontWeight: "700", color: "#0F172A", letterSpacing: "-0.2px" }}>
+                  Campus Bites
                 </span>
               </div>
-            ))}
-          </div>
-
-          <div style={{ borderBottom: "1px dashed #E2E8F0", margin: "20px 0" }} />
-
-          {/* Payment verified row */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {/* UPI Icon text/logo */}
               <span
                 style={{
-                  fontSize: "10px",
-                  fontWeight: "900",
-                  fontStyle: "italic",
-                  background: "#F1F5F9",
-                  color: "#0F766E",
-                  padding: "3px 6px",
-                  borderRadius: "4px",
-                  border: "1px solid #CBD5E1",
+                  background: isCompleted ? "#F1F5F9" : "#DCFCE7",
+                  color: isCompleted ? "#64748B" : "#15803D",
+                  padding: "4px 10px",
+                  borderRadius: "12px",
+                  fontSize: "11px",
+                  fontWeight: "800",
+                  letterSpacing: "0.5px",
                 }}
               >
-                UPI
-              </span>
-              <span style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>
-                Paid via UPI
+                {isCompleted ? "COLLECTED" : "PAID"}
               </span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ fontSize: "13px", fontWeight: "600", color: "#16A34A" }}>
-                Verified
+
+            <div style={{ marginBottom: 16 }}>
+              <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#0F172A", margin: 0 }}>
+                {sellerName}
+              </h3>
+              <p style={{ fontSize: "13px", color: "#64748B", margin: "2px 0 0 0", fontWeight: "500" }}>
+                Digital Bill
+              </p>
+            </div>
+
+            {/* Dashed Separator with Order Number Pill */}
+            <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", margin: "24px 0" }}>
+              <div style={{ position: "absolute", left: 0, right: 0, borderBottom: "1px dashed #E2E8F0" }} />
+              <span
+                style={{
+                  position: "relative",
+                  background: "#ffffff",
+                  color: "#0F172A",
+                  padding: "4px 12px",
+                  borderRadius: "12px",
+                  fontSize: "12px",
+                  fontWeight: "700",
+                  border: "1px dashed #CBD5E1",
+                }}
+              >
+                Order #{format4DigitId(orderId)}
               </span>
-              <span className="material-symbols-outlined" style={{ color: "#16A34A", fontSize: 18, fontVariationSettings: "'FILL' 1" }}>
-                check_circle
+            </div>
+
+            {/* Ordered items */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {items.map((item: any, idx: number) => (
+                <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <div>
+                    <span style={{ fontSize: "15px", fontWeight: "600", color: "#0F172A" }}>
+                      {item.name}
+                    </span>
+                    <span style={{ display: "block", fontSize: "12px", color: "#64748B", marginTop: 2, fontWeight: "500" }}>
+                      ×{item.qty}
+                    </span>
+                  </div>
+                  <span style={{ fontSize: "15px", fontWeight: "700", color: "#0F172A" }}>
+                    ₹{item.price * item.qty}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ borderBottom: "1px dashed #E2E8F0", margin: "20px 0" }} />
+
+            {/* Payment verified row */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {/* UPI Icon text/logo */}
+                <span
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: "900",
+                    fontStyle: "italic",
+                    background: "#F1F5F9",
+                    color: "#0F766E",
+                    padding: "3px 6px",
+                    borderRadius: "4px",
+                    border: "1px solid #CBD5E1",
+                  }}
+                >
+                  UPI
+                </span>
+                <span style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>
+                  Paid via UPI
+                </span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ fontSize: "13px", fontWeight: "600", color: "#16A34A" }}>
+                  Verified
+                </span>
+                <span className="material-symbols-outlined" style={{ color: "#16A34A", fontSize: 18, fontVariationSettings: "'FILL' 1" }}>
+                  check_circle
+                </span>
+              </div>
+            </div>
+
+            <div style={{ borderBottom: "1px solid #E2E8F0", margin: "20px 0" }} />
+
+            {/* Subtotal & Discount if applicable */}
+            {hasDiscount && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, margin: "0 0 16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "14px", color: "#64748B" }}>
+                  <span>Subtotal</span>
+                  <span style={{ fontWeight: "500" }}>₹{subtotal}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "14px", color: "#16A34A", fontWeight: "600" }}>
+                  <span>Canteen Offer</span>
+                  <span>−₹{subtotal - total}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Total row */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: "15px", fontWeight: "600", color: "#475569" }}>
+                Total Paid
               </span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {hasDiscount && (
+                  <span style={{ fontSize: "18px", fontWeight: "600", color: "#94A3B8", textDecoration: "line-through" }}>
+                    ₹{subtotal}
+                  </span>
+                )}
+                <span style={{ fontSize: "28px", fontWeight: "800", color: "#0F172A" }}>
+                  ₹{total}
+                </span>
+              </div>
+            </div>
+
+            <div style={{ borderBottom: "1px dashed #E2E8F0", margin: "20px 0" }} />
+
+            {/* Date issued row */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#64748B" }}>
+              <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
+                calendar_today
+              </span>
+              <div style={{ fontSize: "12px", fontWeight: "500" }}>
+                <span style={{ color: "#94A3B8" }}>Issued</span>
+                <span style={{ display: "block", color: "#64748B", marginTop: 2 }}>
+                  {new Date(order.createdAt).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' })} • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
             </div>
           </div>
 
-          <div style={{ borderBottom: "1px solid #E2E8F0", margin: "20px 0" }} />
-
-          {/* Subtotal & Discount if applicable */}
-          {hasDiscount && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10, margin: "0 0 16px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "14px", color: "#64748B" }}>
-                <span>Subtotal</span>
-                <span style={{ fontWeight: "500" }}>₹{subtotal}</span>
+          {/* Yellow Caution-Style Tape Overlay */}
+          {isCompleted && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                overflow: "hidden",
+                pointerEvents: "none",
+                zIndex: 30,
+              }}
+            >
+              {/* Tape 1 (negative rotation) */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "60px",
+                  left: "-20%",
+                  width: "140%",
+                  background: "#FACC15",
+                  color: "#000000",
+                  fontWeight: "900",
+                  fontSize: "11px",
+                  letterSpacing: "2.5px",
+                  textTransform: "uppercase",
+                  padding: "5px 0",
+                  textAlign: "center",
+                  transform: "rotate(-10deg)",
+                  boxShadow: "0 6px 12px rgba(0,0,0,0.18)",
+                  borderTop: "3px solid #000000",
+                  borderBottom: "3px solid #000000",
+                  whiteSpace: "nowrap",
+                  fontFamily: "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif",
+                  userSelect: "none",
+                }}
+              >
+                COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "14px", color: "#16A34A", fontWeight: "600" }}>
-                <span>Canteen Offer</span>
-                <span>−₹{subtotal - total}</span>
+
+              {/* Tape 2 (positive rotation) */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "60px",
+                  left: "-20%",
+                  width: "140%",
+                  background: "#FACC15",
+                  color: "#000000",
+                  fontWeight: "900",
+                  fontSize: "11px",
+                  letterSpacing: "2.5px",
+                  textTransform: "uppercase",
+                  padding: "5px 0",
+                  textAlign: "center",
+                  transform: "rotate(10deg)",
+                  boxShadow: "0 6px 12px rgba(0,0,0,0.18)",
+                  borderTop: "3px solid #000000",
+                  borderBottom: "3px solid #000000",
+                  whiteSpace: "nowrap",
+                  fontFamily: "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif",
+                  userSelect: "none",
+                }}
+              >
+                COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED
               </div>
             </div>
           )}
-
-          {/* Total row */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: "15px", fontWeight: "600", color: "#475569" }}>
-              Total Paid
-            </span>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {hasDiscount && (
-                <span style={{ fontSize: "18px", fontWeight: "600", color: "#94A3B8", textDecoration: "line-through" }}>
-                  ₹{subtotal}
-                </span>
-              )}
-              <span style={{ fontSize: "28px", fontWeight: "800", color: "#0F172A" }}>
-                ₹{total}
-              </span>
-            </div>
-          </div>
-
-          <div style={{ borderBottom: "1px dashed #E2E8F0", margin: "20px 0" }} />
-
-          {/* Date issued row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#64748B" }}>
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>
-              calendar_today
-            </span>
-            <div style={{ fontSize: "12px", fontWeight: "500" }}>
-              <span style={{ color: "#94A3B8" }}>Issued</span>
-              <span style={{ display: "block", color: "#64748B", marginTop: 2 }}>
-                {new Date(order.createdAt).toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' })} • {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </span>
-            </div>
-          </div>
 
           {/* Bottom Scalloped Edge */}
           <div
