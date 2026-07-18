@@ -21,6 +21,27 @@ const format4DigitId = (id: string): string => {
   return numericOnly.length >= 4 ? numericOnly.slice(-4) : id.slice(-4);
 };
 
+const CANTEEN_COLORS = [
+  { primary: "#2563EB", light: "#EFF6FF", border: "#DBEAFE", text: "#1E40AF" }, // Blue
+  { primary: "#7C3AED", light: "#F5F3FF", border: "#EDE9FE", text: "#5B21B6" }, // Purple
+  { primary: "#059669", light: "#ECFDF5", border: "#D1FAE5", text: "#065F46" }, // Emerald/Green
+  { primary: "#EC4899", light: "#FDF2F8", border: "#FCE7F3", text: "#9D174D" }, // Pink/Rose
+  { primary: "#D97706", light: "#FEF3C7", border: "#FDE68A", text: "#92400E" }, // Amber/Orange
+  { primary: "#0891B2", light: "#ECFEFF", border: "#CFFAFE", text: "#075985" }, // Cyan/Teal
+  { primary: "#DC2626", light: "#FEF2F2", border: "#FEE2E2", text: "#991B1B" }, // Red
+  { primary: "#4F46E5", light: "#EEF2FF", border: "#E0E7FF", text: "#3730A3" }, // Indigo
+];
+
+const getCanteenColor = (canteenId?: string | null) => {
+  if (!canteenId) return CANTEEN_COLORS[0];
+  let hash = 0;
+  for (let i = 0; i < canteenId.length; i++) {
+    hash = canteenId.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % CANTEEN_COLORS.length;
+  return CANTEEN_COLORS[index];
+};
+
 const OrderStatus = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -184,6 +205,8 @@ const OrderStatus = () => {
   const isDigitalBill = processingMode === "online" || isCompleted;
 
   if (isDigitalBill) {
+    const canteenId = order?.sellerId || dbOrder?.seller_id || dbOrder?.sellerId || "";
+    const color = getCanteenColor(canteenId);
     // isCompleted resolves from parent scope
     const completedAtTime = dbOrder?.completedAt || dbOrder?.completed_at || dbOrder?.paid_at || dbOrder?.updated_at || new Date().toISOString();
     const formattedCompletedTime = new Date(completedAtTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -223,15 +246,15 @@ const OrderStatus = () => {
               width: 56,
               height: 56,
               borderRadius: "50%",
-              background: "#DCFCE7",
+              background: color.light,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto 12px",
-              boxShadow: "0 4px 10px rgba(22,163,74,0.1)",
+              boxShadow: `0 4px 10px ${color.primary}1A`,
             }}
           >
-            <span className="material-symbols-outlined" style={{ color: "#15803D", fontSize: 28, fontWeight: "bold" }}>
+            <span className="material-symbols-outlined" style={{ color: color.primary, fontSize: 28, fontWeight: "bold" }}>
               check
             </span>
           </div>
@@ -257,6 +280,17 @@ const OrderStatus = () => {
             borderRight: "1px solid #F1F5F9",
           }}
         >
+          {/* Top colored accent bar */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "6px",
+              background: color.primary,
+            }}
+          />
           {/* Top Scalloped Edge */}
           <div
             style={{
@@ -276,7 +310,7 @@ const OrderStatus = () => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 {/* Leaf Icon SVG */}
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#3B82F6">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill={color.primary}>
                   <path d="M2,21 C2,21 5,14 12,14 C12,14 17,9 18,6 C19,3 15,2 12,5 C9,8 9,12 9,12 C9,12 4,12 2,21 Z" />
                   <path d="M12,21 C12,21 14,16 19,16 C19,16 22,12 23,10 C24,8 21,7 19,9 C17,11 17,14 17,14 C17,14 13,14 12,21 Z" opacity="0.7" />
                 </svg>
@@ -286,8 +320,8 @@ const OrderStatus = () => {
               </div>
               <span
                 style={{
-                  background: isCompleted ? "#F1F5F9" : "#DCFCE7",
-                  color: isCompleted ? "#64748B" : "#15803D",
+                  background: isCompleted ? "#F1F5F9" : color.light,
+                  color: isCompleted ? "#64748B" : color.text,
                   padding: "4px 10px",
                   borderRadius: "12px",
                   fontSize: "11px",
@@ -300,7 +334,7 @@ const OrderStatus = () => {
             </div>
 
             <div style={{ marginBottom: 16 }}>
-              <h3 style={{ fontSize: "24px", fontWeight: "800", color: "#0F172A", margin: 0 }}>
+              <h3 style={{ fontSize: "24px", fontWeight: "800", color: color.text, margin: 0 }}>
                 {sellerName}
               </h3>
               <p style={{ fontSize: "13px", color: "#64748B", margin: "2px 0 0 0", fontWeight: "500" }}>
@@ -315,12 +349,12 @@ const OrderStatus = () => {
                 style={{
                   position: "relative",
                   background: "#ffffff",
-                  color: "#0F172A",
+                  color: color.text,
                   padding: "4px 12px",
                   borderRadius: "12px",
                   fontSize: "12px",
                   fontWeight: "700",
-                  border: "1px dashed #CBD5E1",
+                  border: `1px dashed ${color.primary}`,
                 }}
               >
                 Order #{format4DigitId(orderId)}
@@ -357,11 +391,11 @@ const OrderStatus = () => {
                     fontSize: "10px",
                     fontWeight: "900",
                     fontStyle: "italic",
-                    background: "#F1F5F9",
-                    color: "#0F766E",
+                    background: color.light,
+                    color: color.primary,
                     padding: "3px 6px",
                     borderRadius: "4px",
-                    border: "1px solid #CBD5E1",
+                    border: `1px solid ${color.border}`,
                   }}
                 >
                   UPI
@@ -371,10 +405,10 @@ const OrderStatus = () => {
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <span style={{ fontSize: "13px", fontWeight: "600", color: "#16A34A" }}>
+                <span style={{ fontSize: "13px", fontWeight: "600", color: color.primary }}>
                   Verified
                 </span>
-                <span className="material-symbols-outlined" style={{ color: "#16A34A", fontSize: 18, fontVariationSettings: "'FILL' 1" }}>
+                <span className="material-symbols-outlined" style={{ color: color.primary, fontSize: 18, fontVariationSettings: "'FILL' 1" }}>
                   check_circle
                 </span>
               </div>
@@ -515,7 +549,7 @@ const OrderStatus = () => {
                   width: "100%",
                   height: 52,
                   borderRadius: 26,
-                  background: "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                  background: `linear-gradient(135deg, ${color.primary} 0%, ${color.text} 100%)`,
                   color: "#ffffff",
                   fontSize: 15,
                   fontWeight: "700",
@@ -525,7 +559,7 @@ const OrderStatus = () => {
                   justifyContent: "center",
                   gap: 8,
                   cursor: "pointer",
-                  boxShadow: "0 8px 20px rgba(37,99,235,0.15)",
+                  boxShadow: `0 8px 20px ${color.primary}26`,
                 }}
               >
                 <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
@@ -548,19 +582,19 @@ const OrderStatus = () => {
                 width: "100%",
                 padding: "16px",
                 borderRadius: 16,
-                background: "#DCFCE7",
-                border: "1px solid #BBF7D0",
+                background: color.light,
+                border: `1px solid ${color.border}`,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 gap: 4,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#15803D", fontWeight: "700", fontSize: "15px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, color: color.text, fontWeight: "700", fontSize: "15px" }}>
                 <span>✓</span>
                 <span>Order Completed</span>
               </div>
-              <span style={{ fontSize: "12px", color: "#16A34A", fontWeight: "500" }}>
+              <span style={{ fontSize: "12px", color: color.primary, fontWeight: "500" }}>
                 Completed on {new Date(completedAtTime).toLocaleDateString([], { day: '2-digit', month: 'short' })} • {formattedCompletedTime}
               </span>
             </div>
