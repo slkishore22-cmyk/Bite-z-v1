@@ -440,59 +440,52 @@ const OrderStatus = () => {
                 zIndex: 30,
               }}
             >
-              {/* Tape 1 (negative rotation) */}
-              <div
+              <svg
+                viewBox="0 0 380 120"
                 style={{
+                  width: "100%",
+                  height: "auto",
                   position: "absolute",
-                  bottom: "60px",
-                  left: "-20%",
-                  width: "140%",
-                  background: "#FACC15",
-                  color: "#000000",
-                  fontWeight: "900",
-                  fontSize: "11px",
-                  letterSpacing: "2.5px",
-                  textTransform: "uppercase",
-                  padding: "5px 0",
-                  textAlign: "center",
-                  transform: "rotate(-10deg)",
-                  boxShadow: "0 6px 12px rgba(0,0,0,0.18)",
-                  borderTop: "3px solid #000000",
-                  borderBottom: "3px solid #000000",
-                  whiteSpace: "nowrap",
-                  fontFamily: "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif",
-                  userSelect: "none",
+                  bottom: "35px",
+                  left: 0,
+                  pointerEvents: "none",
+                  filter: "drop-shadow(0px 3px 5px rgba(0,0,0,0.15))",
                 }}
               >
-                COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED
-              </div>
-
-              {/* Tape 2 (positive rotation) */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "60px",
-                  left: "-20%",
-                  width: "140%",
-                  background: "#FACC15",
-                  color: "#000000",
-                  fontWeight: "900",
-                  fontSize: "11px",
-                  letterSpacing: "2.5px",
-                  textTransform: "uppercase",
-                  padding: "5px 0",
-                  textAlign: "center",
-                  transform: "rotate(10deg)",
-                  boxShadow: "0 6px 12px rgba(0,0,0,0.18)",
-                  borderTop: "3px solid #000000",
-                  borderBottom: "3px solid #000000",
-                  whiteSpace: "nowrap",
-                  fontFamily: "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif",
-                  userSelect: "none",
-                }}
-              >
-                COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED
-              </div>
+                {/* Black border background */}
+                <path
+                  d="M -15,30 L 95,90 L 190,30 L 285,90 L 395,30"
+                  fill="none"
+                  stroke="#000000"
+                  strokeWidth="18"
+                  strokeLinejoin="miter"
+                  strokeLinecap="square"
+                />
+                {/* Yellow center line */}
+                <path
+                  id="w-tape-path"
+                  d="M -15,30 L 95,90 L 190,30 L 285,90 L 395,30"
+                  fill="none"
+                  stroke="#FACC15"
+                  strokeWidth="14"
+                  strokeLinejoin="miter"
+                  strokeLinecap="square"
+                />
+                <text
+                  dy="3.5"
+                  style={{
+                    fontFamily: "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif",
+                    fontSize: "8.5px",
+                    fontWeight: "900",
+                    letterSpacing: "2.5px",
+                    fill: "#000000",
+                  }}
+                >
+                  <textPath href="#w-tape-path" startOffset="50%" textAnchor="middle">
+                    COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED
+                  </textPath>
+                </text>
+              </svg>
             </div>
           )}
 
