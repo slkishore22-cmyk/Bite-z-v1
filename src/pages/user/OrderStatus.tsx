@@ -542,40 +542,27 @@ const OrderStatus = () => {
         {/* Canteen Staff complete order action */}
         <div style={{ width: "100%", maxWidth: "380px", marginTop: 24, display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
           {!isCompleted ? (
-            <>
-              <button
-                onClick={handleCompleteTap}
-                style={{
-                  width: "100%",
-                  height: 52,
-                  borderRadius: 26,
-                  background: `linear-gradient(135deg, ${color.primary} 0%, ${color.text} 100%)`,
-                  color: "#ffffff",
-                  fontSize: 15,
-                  fontWeight: "700",
-                  border: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  cursor: "pointer",
-                  boxShadow: `0 8px 20px ${color.primary}26`,
-                }}
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: 20 }}>
-                  verified_user
-                </span>
-                {taps === 0 ? "Complete Order" : `Tap ${taps + 1} of 3`}
-              </button>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#64748B" }}>
-                <span className="material-symbols-outlined" style={{ fontSize: 16 }}>
-                  security
-                </span>
-                <span style={{ fontSize: "11px", fontWeight: "500", textAlign: "center" }}>
-                  Only canteen staff should press this button after handing over the food.
-                </span>
+            <div
+              style={{
+                width: "100%",
+                padding: "16px",
+                borderRadius: 16,
+                background: "#EFF6FF",
+                border: "1px solid #BFDBFE",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#1D4ED8", fontWeight: "700", fontSize: "15px" }}>
+                <div className="pulse-dot" style={{ width: 8, height: 8, borderRadius: "50%", background: "#2563EB" }} />
+                <span>Preparing Order</span>
               </div>
-            </>
+              <span style={{ fontSize: "12px", color: "#1E40AF", fontWeight: "500", textAlign: "center" }}>
+                Staff will mark this order completed when they hand over your food.
+              </span>
+            </div>
           ) : (
             <div
               style={{

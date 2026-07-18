@@ -532,13 +532,23 @@ Status: SCANNED - CONFIRMED
                     </div>
                   </div>
                   {tab === "live" && (
-                    <button
-                      type="button"
-                      onClick={() => setOrderStatus(o.uid, "Completed")}
-                      className="mt-3 w-full rounded-full bg-primary py-2 text-xs font-extrabold uppercase tracking-wider text-primary-foreground transition hover:bg-primary/90"
-                    >
-                      Mark Completed
-                    </button>
+                    o.payment === "Online" && (o.status === "confirmed" || (o.status || "").toLowerCase() === "confirmed") ? (
+                      <button
+                        type="button"
+                        onClick={() => setOrderStatus(o.uid, "preparing")}
+                        className="mt-3 w-full rounded-full bg-[#EAB308] text-[#000000] py-2 text-xs font-extrabold uppercase tracking-wider transition hover:bg-[#EAB308]/90"
+                      >
+                        Confirm UPI Payment
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setOrderStatus(o.uid, "Completed")}
+                        className="mt-3 w-full rounded-full bg-primary py-2 text-xs font-extrabold uppercase tracking-wider text-primary-foreground transition hover:bg-primary/90"
+                      >
+                        Mark Completed
+                      </button>
+                    )
                   )}
                 </article>
               ))}
@@ -724,6 +734,7 @@ function toOrder(o: StoreOrder): Order {
     total: o.total,
     items: o.items.map((i) => ({ emoji: i.icon, name: i.name, qty: i.qty })),
     completedAt,
+    status: o.status,
   };
 }
 

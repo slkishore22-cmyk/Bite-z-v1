@@ -515,8 +515,10 @@ export async function setOrderStatus(uidOrId: string, status: OrderStatus, notes
       write(next);
     }
 
-    // Sync metrics when order is Completed or confirmed
-    if (status === "Completed" || status === "confirmed") {
+    // Sync metrics when order is Completed (or if it's Online and transitions to preparing/Completed with successful payment)
+    const isOnlineSuccess = updatedOrder.payment === "Online" && (status === "Completed" || status === "preparing");
+    const isCashSuccess = updatedOrder.payment === "Cash" && status === "Completed";
+    if (isOnlineSuccess || isCashSuccess) {
       recordSalesAndSpend(updatedOrder).catch((err) => {
         console.warn("Error running recordSalesAndSpend background task:", err);
       });

@@ -177,8 +177,8 @@ const OrderQRScreen = () => {
           }
         }
 
-        // If already paid (preparing / delivered) — navigate to confirmation/order status
-        if (newStatus === "preparing" || newStatus === "delivered") {
+        // If already paid (preparing / delivered / completed) — navigate to confirmation/order status
+        if (newStatus === "preparing" || newStatus === "delivered" || newStatus === "Completed") {
           navigate(`/app/order-status?method=upi&id=${orderId}`, { replace: true });
         }
       }
@@ -218,25 +218,6 @@ const OrderQRScreen = () => {
 
     // Open UPI app — works on Android and iOS
     window.location.href = upiLink;
-
-    // After returning from UPI app, listen for app becoming visible again
-    const handleReturnFromUPI = () => {
-      if (document.visibilityState === "visible") {
-        updateDoc(doc(db, "orders", orderId), {
-          status: "preparing"
-        }).then(() => {
-          navigate(`/app/order-status?method=upi&id=${orderId}`, { replace: true });
-        }).catch((err) => {
-          console.error("Failed to update order status to preparing:", err);
-          navigate(`/app/order-status?method=upi&id=${orderId}`, { replace: true });
-        });
-      } else {
-        // Re-add listener if it transitioned to hidden
-        document.addEventListener("visibilitychange", handleReturnFromUPI, { once: true });
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleReturnFromUPI, { once: true });
   };
 
   const amountVal = orderInfo.amount || 0;
@@ -611,6 +592,9 @@ const OrderQRScreen = () => {
             border: "1px solid #BFDBFE",
             borderRadius: "16px",
             textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px"
           }}
         >
           <p
@@ -621,17 +605,20 @@ const OrderQRScreen = () => {
               margin: 0,
             }}
           >
-            Completing payment in your UPI app...
+            Payment Initiated
           </p>
           <p
             style={{
-              fontSize: "12px",
+              fontSize: "13px",
               color: "#1E40AF",
-              marginTop: "4px",
               margin: 0,
+              fontWeight: "500"
             }}
           >
-            Please don't close this window.
+            Please complete the payment in your UPI app, then show your payment confirmation screen to the canteen staff.
+          </p>
+          <p style={{ fontSize: "11px", color: "#2563EB", margin: 0, fontWeight: "600" }}>
+            Waiting for canteen staff confirmation...
           </p>
         </div>
       )}
