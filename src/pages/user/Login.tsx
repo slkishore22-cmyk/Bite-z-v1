@@ -14,7 +14,9 @@ const UserLogin = () => {
   const shakeTimer = useRef<number | null>(null);
 
   useEffect(() => {
-    const checkRedirect = () => {
+    let active = true;
+    auth.authStateReady().then(() => {
+      if (!active) return;
       const session = getUserSession();
       const currentUser = auth.currentUser;
       if (session && currentUser) {
@@ -22,11 +24,10 @@ const UserLogin = () => {
       } else if (session && !currentUser) {
         clearLocalSession();
       }
+    });
+    return () => {
+      active = false;
     };
-
-    checkRedirect();
-    const t = setTimeout(checkRedirect, 100);
-    return () => clearTimeout(t);
   }, [navigate]);
 
   const submit = async (e: React.FormEvent) => {
