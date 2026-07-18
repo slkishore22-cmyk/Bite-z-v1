@@ -271,7 +271,7 @@ const OrderStatus = () => {
             }}
           />
 
-          <div>
+          <div style={{ position: "relative", zIndex: 2 }}>
             {/* Card Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -437,7 +437,7 @@ const OrderStatus = () => {
                 inset: 0,
                 overflow: "hidden",
                 pointerEvents: "none",
-                zIndex: 30,
+                zIndex: 1,
               }}
             >
               <svg
