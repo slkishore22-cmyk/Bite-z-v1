@@ -441,13 +441,13 @@ const OrderStatus = () => {
               }}
             >
               <svg
-                viewBox="0 0 380 120"
+                viewBox="0 0 380 500"
+                preserveAspectRatio="none"
                 style={{
                   width: "100%",
-                  height: "auto",
+                  height: "100%",
                   position: "absolute",
-                  top: "50%",
-                  transform: "translateY(-50%)",
+                  top: 0,
                   left: 0,
                   pointerEvents: "none",
                   filter: "drop-shadow(0px 3px 5px rgba(0,0,0,0.15))",
@@ -455,7 +455,7 @@ const OrderStatus = () => {
               >
                 {/* Black border background */}
                 <path
-                  d="M -15,20 L 95,100 L 190,20 L 285,100 L 395,20"
+                  d="M -15,50 L 95,450 L 190,50 L 285,450 L 395,50"
                   fill="none"
                   stroke="#000000"
                   strokeWidth="18"
@@ -465,7 +465,7 @@ const OrderStatus = () => {
                 {/* Yellow center line */}
                 <path
                   id="w-tape-path"
-                  d="M -15,20 L 95,100 L 190,20 L 285,100 L 395,20"
+                  d="M -15,50 L 95,450 L 190,50 L 285,450 L 395,50"
                   fill="none"
                   stroke="#FACC15"
                   strokeWidth="14"
@@ -483,7 +483,7 @@ const OrderStatus = () => {
                   }}
                 >
                   <textPath href="#w-tape-path" startOffset="50%" textAnchor="middle">
-                    COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED
+                    COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED • COLLECTED
                   </textPath>
                 </text>
               </svg>
