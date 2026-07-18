@@ -455,7 +455,7 @@ const OrderStatus = () => {
               >
                 {/* Black border background */}
                 <path
-                  d="M 50,-15 L 330,125 L 50,250 L 330,375 L 50,515"
+                  d="M -15,50 L 95,450 L 190,50 L 285,450 L 395,50"
                   fill="none"
                   stroke="#000000"
                   strokeWidth="18"
@@ -465,7 +465,7 @@ const OrderStatus = () => {
                 {/* Yellow center line */}
                 <path
                   id="w-tape-path"
-                  d="M 50,-15 L 330,125 L 50,250 L 330,375 L 50,515"
+                  d="M -15,50 L 95,450 L 190,50 L 285,450 L 395,50"
                   fill="none"
                   stroke="#FACC15"
                   strokeWidth="14"
