@@ -446,7 +446,8 @@ const OrderStatus = () => {
                   width: "100%",
                   height: "auto",
                   position: "absolute",
-                  bottom: "35px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
                   left: 0,
                   pointerEvents: "none",
                   filter: "drop-shadow(0px 3px 5px rgba(0,0,0,0.15))",
@@ -454,7 +455,7 @@ const OrderStatus = () => {
               >
                 {/* Black border background */}
                 <path
-                  d="M -15,30 L 95,90 L 190,30 L 285,90 L 395,30"
+                  d="M -15,20 L 95,100 L 190,20 L 285,100 L 395,20"
                   fill="none"
                   stroke="#000000"
                   strokeWidth="18"
@@ -464,7 +465,7 @@ const OrderStatus = () => {
                 {/* Yellow center line */}
                 <path
                   id="w-tape-path"
-                  d="M -15,30 L 95,90 L 190,30 L 285,90 L 395,30"
+                  d="M -15,20 L 95,100 L 190,20 L 285,100 L 395,20"
                   fill="none"
                   stroke="#FACC15"
                   strokeWidth="14"
