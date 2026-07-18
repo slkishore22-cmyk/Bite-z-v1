@@ -303,10 +303,18 @@ export function saveOrderLocally(order: Order) {
 
 export async function recordSalesAndSpend(order: Order) {
   const uid = order.uid || (order as any).id || (order as any).uid;
-  const isSalesRecorded = order.isSalesRecorded || (order as any).isSalesRecorded || (order as any).is_sales_recorded || false;
-  if (isSalesRecorded) return;
 
   try {
+    // 0. Double check in Firestore first to avoid duplicate recording
+    const orderDocRef = doc(db, "orders", uid);
+    const orderSnap = await getDoc(orderDocRef);
+    if (orderSnap.exists()) {
+      const dbOrder = orderSnap.data() as any;
+      if (dbOrder.isSalesRecorded || dbOrder.is_sales_recorded) {
+        return; // Already recorded in database, skip
+      }
+    }
+
     const rawDate = order.createdAt || (order as any).created_at || (order as any).createdAt || Date.now();
     const dateObj = typeof rawDate === "number" ? new Date(rawDate) : new Date(String(rawDate));
     const todayStr = isNaN(dateObj.getTime()) ? new Date().toISOString().slice(0, 10) : dateObj.toISOString().slice(0, 10);
@@ -336,6 +344,15 @@ export async function recordSalesAndSpend(order: Order) {
       const salesDocRef = doc(db, "seller_sales", salesDocId);
 
       await runTransaction(db, async (transaction) => {
+        // Double-check inside transaction for absolute safety against concurrent requests
+        const orderSnapTx = await transaction.get(orderDocRef);
+        if (orderSnapTx.exists()) {
+          const dbOrderTx = orderSnapTx.data() as any;
+          if (dbOrderTx.isSalesRecorded || dbOrderTx.is_sales_recorded) {
+            return;
+          }
+        }
+
         // Reads
         const salesSnap = await transaction.get(salesDocRef);
         
@@ -380,14 +397,18 @@ export async function recordSalesAndSpend(order: Order) {
             last_sold_at: new Date().toISOString(),
           });
         }
+
+        // Update the order itself to mark isSalesRecorded: true inside the transaction
+        transaction.update(orderDocRef, {
+          isSalesRecorded: true,
+        });
+      });
+    } else {
+      // If no sellerId, still mark order as recorded
+      await updateDoc(orderDocRef, {
+        isSalesRecorded: true,
       });
     }
-
-    // 4. Update order itself to mark isSalesRecorded: true
-    const orderDocRef = doc(db, "orders", uid);
-    await updateDoc(orderDocRef, {
-      isSalesRecorded: true,
-    });
   } catch (err) {
     console.warn("Failed to record sales and spend details:", err);
   }
@@ -462,18 +483,13 @@ export async function setOrderStatus(uidOrId: string, status: OrderStatus, notes
   }
 
   const completedAt = status === "Completed" ? target.completedAt ?? Date.now() : target.completedAt;
-  const isSalesRecorded =
-    status === "Completed"
-      ? true
-      : status === "Cancelled" || status === "Expired"
-      ? Boolean(target.isSalesRecorded && target.payment === "Online")
-      : target.isSalesRecorded;
+  const isSalesRecorded = target.isSalesRecorded || false;
 
   const updatedOrder = {
     ...target,
     status,
     completedAt,
-    isSalesRecorded: isSalesRecorded ?? target.isSalesRecorded,
+    isSalesRecorded: isSalesRecorded,
     ...(notes !== undefined ? { notes } : {})
   };
 
@@ -482,7 +498,7 @@ export async function setOrderStatus(uidOrId: string, status: OrderStatus, notes
     const updatePayload: any = {
       status,
       completedAt: completedAt || null,
-      isSalesRecorded: isSalesRecorded || false
+      isSalesRecorded: isSalesRecorded
     };
     if (notes !== undefined) {
       updatePayload.notes = notes;
