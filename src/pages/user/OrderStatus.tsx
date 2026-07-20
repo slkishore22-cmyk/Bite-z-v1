@@ -543,6 +543,7 @@ const OrderStatus = () => {
         <div style={{ width: "100%", maxWidth: "380px", marginTop: 24, display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
           {!isCompleted ? (
             <div
+              onClick={handleCompleteTap}
               style={{
                 width: "100%",
                 padding: "16px",
@@ -553,6 +554,8 @@ const OrderStatus = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 gap: 4,
+                cursor: "pointer",
+                userSelect: "none",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 6, color: "#1D4ED8", fontWeight: "700", fontSize: "15px" }}>
@@ -561,6 +564,11 @@ const OrderStatus = () => {
               </div>
               <span style={{ fontSize: "12px", color: "#1E40AF", fontWeight: "500", textAlign: "center" }}>
                 Staff will mark this order completed when they hand over your food.
+                {taps > 0 && (
+                  <span style={{ display: "block", color: "#2563EB", fontWeight: "bold", marginTop: 4 }}>
+                    Tap {3 - taps} more time{3 - taps > 1 ? "s" : ""} (Staff Quick Complete)
+                  </span>
+                )}
               </span>
             </div>
           ) : (
