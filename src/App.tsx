@@ -329,7 +329,7 @@ const App = () => (
           <Route path="/master-admin" element={<Navigate to="/master-admin/overview" replace />} />
 
           <Route path="/404" element={<NotFound />} />
-            <Route path="*" element={<RootRedirect />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

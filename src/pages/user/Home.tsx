@@ -8,6 +8,7 @@ import { addToCart, getCart, pruneCartByCanteens, setCartQty, subscribeCart } fr
 import { getActiveOffers, loadOffersFromBackend, subscribeOffers, type SellerOffer } from "@/lib/sellerOffers";
 import { getRegisteredCanteens, getRegisteredCanteensFromBackend, subscribeCanteens, type SellerProfile } from "@/lib/sellerProfile";
 import { getUserName } from "@/utils/sessionManager";
+import { logoutUser } from "@/lib/userAuth";
 
 type Offer = { canteen: string; title: string; discount: string; active: boolean; sellerId: string | null };
 type Repeat = {
@@ -27,6 +28,15 @@ type Spot = { id: string; icon: string; name: string; sub: string };
 
 const Home = () => {
   const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await logoutUser();
+      navigate("/app/login", { replace: true });
+    } catch (err) {
+      console.error("Failed to sign out:", err);
+    }
+  };
 
   const [orders, setOrders] = useState(() => getOrders());
   const [cart, setCart] = useState(() => getCart());
@@ -164,22 +174,48 @@ const Home = () => {
         }}
       >
         {/* Header */}
-        <h1
-          className="user-home-greeting"
+        <div
+          className="flex items-center justify-between"
           style={{
             paddingTop: "var(--home-greeting-top, calc(env(safe-area-inset-top, 0px) + clamp(20px, 5svh, 44px)))",
-            marginTop: 0,
             paddingLeft: "var(--user-page-pad)",
             paddingRight: "var(--user-page-pad)",
-            fontSize: 28,
-            fontWeight: 800,
-            letterSpacing: 0,
-            color: "#1D1D1F",
             marginBottom: "var(--home-greeting-gap, clamp(24px, 5.5svh, 52px))",
           }}
         >
-          Hey, {getUserName()} 👋
-        </h1>
+          <h1
+            className="user-home-greeting"
+            style={{
+              marginTop: 0,
+              marginBottom: 0,
+              fontSize: 28,
+              fontWeight: 800,
+              letterSpacing: 0,
+              color: "#1D1D1F",
+            }}
+          >
+            Hey, {getUserName()} 👋
+          </h1>
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 shrink-0"
+            style={{
+              padding: "8px 14px",
+              borderRadius: "9999px",
+              background: "rgba(239, 68, 68, 0.08)",
+              border: "1px solid rgba(239, 68, 68, 0.16)",
+              color: "#EF4444",
+              fontSize: "13px",
+              fontWeight: "700",
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>
+              logout
+            </span>
+            Sign Out
+          </button>
+        </div>
 
         {/* Today's Offers — horizontal scroll */}
         {offers.length > 0 && (

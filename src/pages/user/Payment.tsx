@@ -136,7 +136,7 @@ const Payment = () => {
             payment: "Online",
             paymentStatus: "SUCCESS",
             isSoundPlayed: false,
-            isSalesRecorded: true,
+            isSalesRecorded: false,
             items: activeCart.map((c) => ({
               itemId: c.itemId,
               name: c.name,
@@ -202,7 +202,7 @@ const Payment = () => {
             sellerId: firstCartItem?.canteenId ?? null,
             sellerName: firstCartItem?.canteenName ?? null,
             paymentStatus: "SUCCESS",
-            isSalesRecorded: true,
+            isSalesRecorded: false,
           });
 
           clearCart(firstCartItem?.canteenId ?? "__unknown__");
